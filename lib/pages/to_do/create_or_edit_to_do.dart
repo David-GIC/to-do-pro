@@ -1,6 +1,7 @@
 import 'package:check_list_app/models/to_do.dart';
 import 'package:check_list_app/utils/app_colors.dart';
 import 'package:check_list_app/utils/app_text_style.dart';
+import 'package:check_list_app/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class _CreateOrEditToDoPageState extends State<CreateOrEditToDoPage> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<ToDoProvider>(context);
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
       appBar: AppBar(
@@ -40,6 +42,22 @@ class _CreateOrEditToDoPageState extends State<CreateOrEditToDoPage> {
           widget.index == null ? 'Add To-Do' : 'Edit To-Do',
           style: AppTextStyle.titleStyle,
         ),
+        actions: [
+          if (widget.index != null)
+            IconButton(
+                onPressed: () => DialogWidget.confirmDialog(
+                      context: context,
+                      title: "Are you sure to delete this item ?",
+                      onApprove: () {
+                        provider.deleteToDo(widget.index!);
+                        Navigator.pop(context);
+                      },
+                    ),
+                icon: const Icon(
+                  Icons.delete,
+                  color: AppColor.contentColorRed,
+                ))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,7 +67,8 @@ class _CreateOrEditToDoPageState extends State<CreateOrEditToDoPage> {
             children: [
               TextFormField(
                 controller: _titleController,
-                decoration: InputDecoration(label: Text("Title", style: AppTextStyle.normalStyle)),
+                decoration: InputDecoration(
+                    label: Text("Title", style: AppTextStyle.normalStyle)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a title';
@@ -60,7 +79,9 @@ class _CreateOrEditToDoPageState extends State<CreateOrEditToDoPage> {
               TextFormField(
                 controller: _descriptionController,
                 textInputAction: TextInputAction.newline,
-                decoration: InputDecoration(label: Text("Description", style: AppTextStyle.normalStyle), hintText: ""),
+                decoration: InputDecoration(
+                    label: Text("Description", style: AppTextStyle.normalStyle),
+                    hintText: ""),
               ),
               CheckboxListTile(
                 value: _priority,
@@ -81,15 +102,19 @@ class _CreateOrEditToDoPageState extends State<CreateOrEditToDoPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final newToDoItem = ToDo(
-                        createdDate: widget.toDoItem != null ? widget.toDoItem!.createdDate : DateTime.now(),
+                        createdDate: widget.toDoItem != null
+                            ? widget.toDoItem!.createdDate
+                            : DateTime.now(),
                         title: _titleController.text,
                         description: _descriptionController.text,
                         priority: _priority,
-                        isCompleted: widget.toDoItem != null ? widget.toDoItem!.isCompleted : false);
+                        isCompleted: widget.toDoItem != null
+                            ? widget.toDoItem!.isCompleted
+                            : false);
                     if (widget.index == null) {
-                      Provider.of<ToDoProvider>(context, listen: false).addToDo(newToDoItem);
+                      provider.addToDo(newToDoItem);
                     } else {
-                      Provider.of<ToDoProvider>(context, listen: false).updateToDo(widget.index!, newToDoItem);
+                      provider.updateToDo(widget.index!, newToDoItem);
                     }
                     Navigator.pop(context);
                   }

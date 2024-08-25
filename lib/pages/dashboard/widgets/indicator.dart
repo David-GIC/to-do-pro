@@ -45,7 +45,7 @@ class Indicator extends StatelessWidget {
           width: 8,
         ),
         Text(
-          "($valueCount)",
+          valueCount == 0 ? "" : "($valueCount)",
           style: AppTextStyle.normalStyle.copyWith(
             fontSize: 13,
             fontWeight: FontWeight.bold,
