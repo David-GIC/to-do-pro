@@ -17,19 +17,33 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   int isTouched = 99;
+  int priorityPendingCount = 0;
+  int priorityCompletedCount = 0;
+  int completedCount = 0;
+  int pendingCount = 0;
+  List<BarChartGroupData> barGroup = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    ///Graph animations
+    barGroup = buildBarGroupList();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        barGroup = buildBarGroupList();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final toDoProvider = Provider.of<ToDoProvider>(context);
-    final priorityPendingCount = toDoProvider.toDoList
-        .where((item) => item.priority && !item.isCompleted)
-        .length;
-    final priorityCompletedCount = toDoProvider.toDoList
-        .where((item) => item.priority && item.isCompleted)
-        .length;
-    final completedCount =
-        toDoProvider.toDoList.where((item) => item.isCompleted).length;
-    final pendingCount = toDoProvider.toDoList.length - completedCount;
+    priorityPendingCount = toDoProvider.toDoList.where((item) => item.priority && !item.isCompleted).length;
+    priorityCompletedCount = toDoProvider.toDoList.where((item) => item.priority && item.isCompleted).length;
+    completedCount = toDoProvider.toDoList.where((item) => item.isCompleted).length;
+    pendingCount = toDoProvider.toDoList.length - completedCount;
 
     return Scaffold(
       backgroundColor: AppColor.whiteColor,
@@ -54,9 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 text: 'Total',
                 isSquare: false,
                 size: 14,
-                textColor: isTouched == 1
-                    ? AppColor.mainTextColor1
-                    : AppColor.mainTextColor3,
+                textColor: isTouched == 1 ? AppColor.mainTextColor1 : AppColor.mainTextColor3,
                 valueCount: toDoProvider.toDoList.length,
               ),
               const SizedBox(
@@ -69,9 +81,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     text: 'Completed',
                     isSquare: false,
                     size: 14,
-                    textColor: isTouched == 1
-                        ? AppColor.mainTextColor1
-                        : AppColor.mainTextColor3,
+                    textColor: isTouched == 1 ? AppColor.mainTextColor1 : AppColor.mainTextColor3,
                     valueCount: 0,
                   ),
                   const SizedBox(
@@ -82,9 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     text: 'Pending',
                     isSquare: false,
                     size: 14,
-                    textColor: isTouched == 2
-                        ? AppColor.mainTextColor1
-                        : AppColor.mainTextColor3,
+                    textColor: isTouched == 2 ? AppColor.mainTextColor1 : AppColor.mainTextColor3,
                     valueCount: 0,
                   ),
                   const SizedBox(
@@ -95,9 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     text: 'Priority',
                     isSquare: false,
                     size: 14,
-                    textColor: isTouched == 2
-                        ? AppColor.mainTextColor1
-                        : AppColor.mainTextColor3,
+                    textColor: isTouched == 2 ? AppColor.mainTextColor1 : AppColor.mainTextColor3,
                     valueCount: 0,
                   ),
                 ],
@@ -108,44 +114,15 @@ class _DashboardPageState extends State<DashboardPage> {
               SizedBox(
                 height: 400,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8, top: 8, bottom: 16, right: 32),
+                  padding: const EdgeInsets.only(left: 8, top: 8, bottom: 16, right: 32),
                   child: BarChart(
+                    swapAnimationCurve: Curves.fastOutSlowIn,
+                    swapAnimationDuration: const Duration(milliseconds: 1000),
                     BarChartData(
                       alignment: BarChartAlignment.spaceEvenly,
-                      maxY: toDoProvider.toDoList.length.toDouble(),
-                      barGroups: [
-                        BarChartGroupData(
-                          x: 0,
-                          barRods: [
-                            BarChartRodData(
-                                toY: completedCount.toDouble(),
-                                color: AppColor.contentColorGreen,
-                                width: 16,
-                                rodStackItems: [
-                                  BarChartRodStackItem(
-                                      0,
-                                      priorityCompletedCount.toDouble(),
-                                      AppColor.contentColorRed)
-                                ]),
-                          ],
-                        ),
-                        BarChartGroupData(
-                          x: 1,
-                          barRods: [
-                            BarChartRodData(
-                                toY: pendingCount.toDouble(),
-                                color: AppColor.contentColorOrange,
-                                width: 16,
-                                rodStackItems: [
-                                  BarChartRodStackItem(
-                                      0,
-                                      priorityPendingCount.toDouble(),
-                                      AppColor.contentColorRed)
-                                ]),
-                          ],
-                        ),
-                      ],
+                      minY: 0,
+                      maxY: pendingCount > completedCount ? pendingCount.toDouble() : completedCount.toDouble(),
+                      barGroups: barGroup,
                       titlesData: FlTitlesData(
                         topTitles: const AxisTitles(
                           sideTitles: SideTitles(showTitles: false),
@@ -157,13 +134,18 @@ class _DashboardPageState extends State<DashboardPage> {
                           sideTitles: SideTitles(
                             showTitles: true,
                             getTitlesWidget: (double value, TitleMeta meta) {
-                              var style = AppTextStyle.normalStyle.copyWith(
-                                  fontWeight: FontWeight.w600, fontSize: 13);
+                              var style = AppTextStyle.normalStyle.copyWith(fontWeight: FontWeight.w600, fontSize: 13);
                               switch (value.toInt()) {
                                 case 0:
-                                  return Text('Completed', style: style);
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Text('Completed', style: style),
+                                  );
                                 case 1:
-                                  return Text('Pending', style: style);
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Text('Pending', style: style),
+                                  );
                                 default:
                                   return const Text('');
                               }
@@ -171,10 +153,12 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ),
                         leftTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: true),
+                          sideTitles: SideTitles(showTitles: true, interval: 1),
                         ),
                       ),
-                      gridData: const FlGridData(show: true),
+                      gridData: const FlGridData(
+                        show: true,
+                      ),
                       borderData: FlBorderData(
                         show: true,
                       ),
@@ -187,5 +171,30 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
       ),
     );
+  }
+
+  buildBarGroupList() {
+    return [
+      BarChartGroupData(
+        x: 0,
+        barRods: [
+          BarChartRodData(
+              toY: completedCount.toDouble(),
+              color: AppColor.contentColorGreen,
+              width: 16,
+              rodStackItems: [BarChartRodStackItem(0, priorityCompletedCount.toDouble(), AppColor.contentColorRed)]),
+        ],
+      ),
+      BarChartGroupData(
+        x: 1,
+        barRods: [
+          BarChartRodData(
+              toY: pendingCount.toDouble(),
+              color: AppColor.contentColorOrange,
+              width: 16,
+              rodStackItems: [BarChartRodStackItem(0, priorityPendingCount.toDouble(), AppColor.contentColorRed)]),
+        ],
+      ),
+    ];
   }
 }
