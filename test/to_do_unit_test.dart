@@ -48,7 +48,7 @@ void main() {
     });
 
     test('Sorting by pending works correctly', () {
-      toDoProvider.sortByCompleted();
+      toDoProvider.sortByPending();
       expect(toDoProvider.toDoList[0].title, 'My Task 1');
       expect(toDoProvider.toDoList[1].title, 'My Task 3');
     });
@@ -66,7 +66,7 @@ void main() {
     });
 
     test('Sorting by created date works correctly', () {
-      toDoProvider.sortByCompleted();
+      toDoProvider.sortToDoByCreatedDate();
       expect(toDoProvider.toDoList[0].title, 'My Task 1');
       expect(toDoProvider.toDoList[1].title, 'My Task 2');
     });
