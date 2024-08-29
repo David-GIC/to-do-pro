@@ -46,5 +46,29 @@ void main() {
       toDoProvider.toggleCompletion(toDoProvider.toDoList.length - 1);
       expect(toDoProvider.toDoList.last.isCompleted, true);
     });
+
+    test('Sorting by pending works correctly', () {
+      toDoProvider.sortByCompleted();
+      expect(toDoProvider.toDoList[0].title, 'My Task 1');
+      expect(toDoProvider.toDoList[1].title, 'My Task 3');
+    });
+
+    test('Sorting by completed works correctly', () {
+      toDoProvider.sortByCompleted();
+      expect(toDoProvider.toDoList[0].title, 'My Task 2');
+      expect(toDoProvider.toDoList[1].title, 'My Task 3');
+    });
+
+    test('Sorting by priority works correctly', () {
+      toDoProvider.sortByPriority();
+      expect(toDoProvider.toDoList[0].title, 'Urgent task 1');
+      expect(toDoProvider.toDoList[1].title, 'Urgent task 2');
+    });
+
+    test('Sorting by created date works correctly', () {
+      toDoProvider.sortByCompleted();
+      expect(toDoProvider.toDoList[0].title, 'My Task 1');
+      expect(toDoProvider.toDoList[1].title, 'My Task 2');
+    });
   });
 }
