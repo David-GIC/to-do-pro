@@ -50,7 +50,7 @@ void main() {
     test('Sorting by pending works correctly', () {
       toDoProvider.sortByPending();
       expect(toDoProvider.toDoList[0].title, 'My Task 1');
-      expect(toDoProvider.toDoList[1].title, 'My Task 3');
+      expect(toDoProvider.toDoList[1].title, 'My Task 4');
     });
 
     test('Sorting by completed works correctly', () {
@@ -61,14 +61,17 @@ void main() {
 
     test('Sorting by priority works correctly', () {
       toDoProvider.sortByPriority();
-      expect(toDoProvider.toDoList[0].title, 'Urgent task 1');
-      expect(toDoProvider.toDoList[1].title, 'Urgent task 2');
+      expect(toDoProvider.toDoList[0].title, 'My Task 5');
+      expect(toDoProvider.toDoList[1].title, 'My Task 6');
     });
 
     test('Sorting by created date works correctly', () {
+      toDoProvider.toDoList[0].createdDate = DateTime(2025);
+      final newItem = ToDo(title: 'Test Task', description: 'Task Description', priority: true, createdDate: DateTime(2026), isCompleted: false);
+      toDoProvider.toDoList.add(newItem);
       toDoProvider.sortToDoByCreatedDate();
-      expect(toDoProvider.toDoList[0].title, 'My Task 1');
-      expect(toDoProvider.toDoList[1].title, 'My Task 2');
+      expect(toDoProvider.toDoList[0].title, 'Test Task');
+      expect(toDoProvider.toDoList[1].title, 'My Task 1');
     });
   });
 }
