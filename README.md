@@ -4,6 +4,13 @@ A new Check List project.
 
 ## Getting Started
 
+About the app:
+Check list app
+▪ The app allow users to view, create, edit or delete to-do
+▪ The app allow users to set priority or sort data by created date, priority, pending or complete task
+▪ The app allow users to mark to-do list as complete
+▪ The app allow users to see graph data at dashboard page
+
 This project is a starting point for a Flutter application.
 
 Doctor summary (to see all details, run flutter doctor -v):
