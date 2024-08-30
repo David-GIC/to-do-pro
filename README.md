@@ -4,6 +4,8 @@ A new Check List project.
 
 ## Getting Started
 
+Flutter Version: 3.24.1
+
 About the app:
 Check list app
 ▪ The app allow users to view, create, edit or delete to-do
@@ -11,7 +13,8 @@ Check list app
 ▪ The app allow users to mark to-do list as complete
 ▪ The app allow users to see graph data at dashboard page
 
-This project is a starting point for a Flutter application.
+Continuous Integration (CI) with github:
+▪ .github/workflows/flutter-ci.yml
 
 Doctor summary (to see all details, run flutter doctor -v):
 [✓] Flutter (Channel stable, 3.24.1, on macOS 14.4 23E214 darwin-arm64, locale en-KH)
